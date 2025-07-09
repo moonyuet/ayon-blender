@@ -311,23 +311,44 @@ def get_selected_collections():
     return [id for id in ids if isinstance(id, bpy.types.Collection)]
 
 
-def get_selection(include_collections: bool = False) -> List[bpy.types.Object]:
+def get_selection(
+        include_collections: bool = False,
+        include_object_children_recursive: bool = False
+    )-> List[Union[bpy.types.Object, bpy.types.Collection]]:
     """
     Returns a list of selected objects in the current Blender scene.
 
     Args:
         include_collections (bool, optional): Whether to include selected
         collections in the result. Defaults to False.
+        include_object_children_recursive (bool, optional): Whether to include all
+        hierarchies of selected objects.
 
     Returns:
-        List[bpy.types.Object]: A list of selected objects.
+        List[Union[bpy.types.Object,
+        bpy.types.Collection]]: Selected objects and optionally collections.
     """
-    selection = [obj for obj in bpy.context.scene.objects if obj.select_get()]
+    selection = {
+        obj for obj in bpy.context.scene.objects if obj.select_get()
+    }
 
     if include_collections:
-        selection.extend(get_selected_collections())
+        selection.update(get_selected_collections())
+    if include_object_children_recursive:
+        selection.update(get_object_children_recursive(selection))
 
-    return selection
+    return list(selection)
+
+
+def get_object_children_recursive(objects: set[bpy.types.Object]) -> set[bpy.types.Object]:
+    """Return all object children of any objects in the inputs.
+
+    Any input that is not a `bpy.types.Object` is skipped."""
+    children = set()
+    for obj in objects:
+        if isinstance(obj, bpy.types.Object):
+            children.update(obj.children_recursive)
+    return children
 
 
 @contextlib.contextmanager
