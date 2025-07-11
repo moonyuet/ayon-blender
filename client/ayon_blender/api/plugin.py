@@ -204,6 +204,8 @@ class BlenderCreator(Creator):
             cache_legacy = {}
             convert_avalon_instances()
             ayon_instances = bpy.data.collections.get(AYON_INSTANCES)
+            if ayon_instances:
+                hide_ayon_data(ayon_instances)
             ayon_instance_objs = (
                 ayon_instances.objects if ayon_instances else []
             )
