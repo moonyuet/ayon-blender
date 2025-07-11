@@ -1,6 +1,5 @@
 import bpy
 import os
-import shutil
 from typing import Dict, List, Optional, Union
 from ayon_core.lib import BoolDef
 from ayon_blender.api import plugin
@@ -14,11 +13,7 @@ from ayon_blender.api.pipeline import (
     metadata_update,
     get_container_name
 )
-from ayon_blender.api.constants import (
-    AYON_PROPERTY,
-    AYON_CONTAINERS
-)
-
+from ayon_blender.api.constants import AYON_PROPERTY
 
 class BlendLinkLoader(plugin.BlenderLoader):
     """Link assets from a .blend file."""
@@ -91,7 +86,7 @@ class BlendLinkLoader(plugin.BlenderLoader):
             "project_name": context["project"]["name"]
         }
 
-        loaded_collection[AYON_CONTAINERS] = data
+        loaded_collection[AYON_PROPERTY] = data
         # TODO: Store loader options for later use (e.g. on update)
         # Store the loader options on the container for later use if needed.
 
