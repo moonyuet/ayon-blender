@@ -13,7 +13,10 @@ from ayon_blender.api.pipeline import (
     metadata_update,
     get_container_name
 )
-from ayon_blender.api.constants import AYON_PROPERTY
+from ayon_blender.api.constants import (
+    AYON_PROPERTY,
+    AYON_CONTAINERS
+)
 
 class BlendLinkLoader(plugin.BlenderLoader):
     """Link assets from a .blend file."""
@@ -74,6 +77,12 @@ class BlendLinkLoader(plugin.BlenderLoader):
             if local_copy:
                 loaded_collection = local_copy
 
+        ayon_container = bpy.data.collections.get(AYON_CONTAINERS)
+        if not ayon_container:
+            ayon_container = bpy.data.collections.new(name=AYON_CONTAINERS)
+            bpy.context.scene.collection.children.link(ayon_container)
+
+        ayon_container.children.link(loaded_collection)
         data = {
             "schema": "ayon:container-3.0",
             "id": AYON_CONTAINER_ID,
