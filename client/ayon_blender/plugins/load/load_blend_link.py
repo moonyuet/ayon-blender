@@ -11,11 +11,12 @@ from ayon_blender.api.plugin_load import (
     load_collection
 )
 from ayon_blender.api.pipeline import (
-    ls,
-    AVALON_CONTAINERS,
-    AVALON_PROPERTY,
     metadata_update,
     get_container_name
+)
+from ayon_blender.api.constants import (
+    AYON_PROPERTY,
+    AYON_CONTAINERS
 )
 
 
@@ -78,12 +79,6 @@ class BlendLinkLoader(plugin.BlenderLoader):
             if local_copy:
                 loaded_collection = local_copy
 
-        avalon_container = bpy.data.collections.get(AVALON_CONTAINERS)
-        if not avalon_container:
-            avalon_container = bpy.data.collections.new(name=AVALON_CONTAINERS)
-            bpy.context.scene.collection.children.link(avalon_container)
-
-        avalon_container.children.link(loaded_collection)
         data = {
             "schema": "ayon:container-3.0",
             "id": AYON_CONTAINER_ID,
@@ -96,7 +91,7 @@ class BlendLinkLoader(plugin.BlenderLoader):
             "project_name": context["project"]["name"]
         }
 
-        loaded_collection[AVALON_PROPERTY] = data
+        loaded_collection[AYON_CONTAINERS] = data
         # TODO: Store loader options for later use (e.g. on update)
         # Store the loader options on the container for later use if needed.
 
